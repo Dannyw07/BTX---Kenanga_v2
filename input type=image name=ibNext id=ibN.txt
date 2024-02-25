@@ -1,0 +1,1 @@
+<input type="image" name="ibNext" id="ibNext" src="/btxadmin/images/demo/a_next.gif" onclick="onNext('txtPage', 'txtSize', 'lblTotalPage');" style="border-width:0px;">

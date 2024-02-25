@@ -1,0 +1,36 @@
+DevTools listening on ws://127.0.0.1:50757/devtools/browser/3ce38102-4112-4bcf-9ff9-6c2fd1812cf4
+Traceback (most recent call last):
+  File "C:\Users\dannywong\Desktop\BTX Monitoring_Kenanga\two.py", line 31, in <module>
+    class two(tk.Frame):
+  File "C:\Users\dannywong\Desktop\BTX Monitoring_Kenanga\two.py", line 57, in two
+    dayEndM_image = driver.find_element(By.XPATH,"//img[@src='/btxadmin/images/demo/icons/i_dayEndM_off.jpg']")
+  File "C:\Users\dannywong\AppData\Local\Programs\Python\Python39\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 741, in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+  File "C:\Users\dannywong\AppData\Local\Programs\Python\Python39\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 347, in execute 
+    self.error_handler.check_response(response)
+  File "C:\Users\dannywong\AppData\Local\Programs\Python\Python39\lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 229, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {"method":"xpath","selector":"//img[@src='/btxadmin/images/demo/icons/i_dayEndM_off.jpg']"}
+  (Session info: chrome=122.0.6261.57); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+        GetHandleVerifier [0x00007FF6D5394C82+3505170]
+        (No symbol) [0x00007FF6D4FC0852]
+        (No symbol) [0x00007FF6D4E74145]
+        (No symbol) [0x00007FF6D4EB9ADD]
+        (No symbol) [0x00007FF6D4EB9C1C]
+        (No symbol) [0x00007FF6D4EFAB27]
+        (No symbol) [0x00007FF6D4EDBECF]
+        (No symbol) [0x00007FF6D4EF83B2]
+        (No symbol) [0x00007FF6D4EDBC33]
+        (No symbol) [0x00007FF6D4EAD618]
+        (No symbol) [0x00007FF6D4EAE6B1]
+        GetHandleVerifier [0x00007FF6D53C67DD+3708781]
+        GetHandleVerifier [0x00007FF6D541FC5D+4074477]
+        GetHandleVerifier [0x00007FF6D5417DDF+4042095]
+        GetHandleVerifier [0x00007FF6D50EA136+708806]
+        (No symbol) [0x00007FF6D4FCCB0F]
+        (No symbol) [0x00007FF6D4FC7D14]
+        (No symbol) [0x00007FF6D4FC7E6C]
+        (No symbol) [0x00007FF6D4FB79A4]
+        BaseThreadInitThunk [0x00007FFE8C4F257D+29]
+        RtlUserThreadStart [0x00007FFE8DFAAA58+40]
