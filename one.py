@@ -3,7 +3,8 @@ from libraries import *
 from socket import timeout as SocketTimeoutError
 
 class one(tk.Frame):
-        
+    
+    try: 
         driver = webdriver.Chrome()
         #Initial URL
         driver.get('https://btx.kenanga.com.my/btxadmin/default.aspx')
@@ -227,6 +228,12 @@ class one(tk.Frame):
 
         # Close the main window
         driver.close()
+    except NoSuchWindowException:
+        print("The browser window was unexpectedly closed.")
+    # You might want to take appropriate action here, such as reopening the browser.
+    finally:
+        # Make sure to quit the WebDriver to release resources
+        driver.quit()
 
 
    
