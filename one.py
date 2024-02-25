@@ -1,8 +1,5 @@
 from libraries import *
 
-from socket import timeout as SocketTimeoutError
-from driver_utils import initialize_driver, navigate_to_initial_url, login
-
 class one(tk.Frame):
     
     try: 

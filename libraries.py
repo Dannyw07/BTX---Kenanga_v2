@@ -30,7 +30,9 @@ from selenium.webdriver.support.ui import Select
 import datetime
 import configparser
 from selenium.common.exceptions import NoSuchWindowException
+from driver_utils import initialize_driver, navigate_to_initial_url, login
 from emailBody import generate_email_body, image1_base64, image2_base64
 from table_extraction import extract_table_data
 from create_excel import generate_excel_file
 from create_html_table import modify_html_table
+from socket import timeout as SocketTimeoutError

@@ -3,28 +3,17 @@ from libraries import *
 class Three(tk.Frame):
 
     try:
-        driver = webdriver.Chrome()
-        #Initial URL
-        driver.get('https://btx.kenanga.com.my/btxadmin/default.aspx')
+        # Initialize WebDriver
+        driver = initialize_driver()
 
-        # Maximizing window
-        driver.maximize_window()
+        # Navigate to initial URL
+        initial_url = 'https://btx.kenanga.com.my/btxadmin/default.aspx'
+        navigate_to_initial_url(driver, initial_url)
 
-        #Wait for the website to fully load
-        time.sleep(2)
-
-        # Make selenium to automate the login process (username,password,login button)
-        username_input = driver.find_element(By.ID, 'ctl00_cntPlcHldrContent_txtUsrID')
-        password_input = driver.find_element(By.ID, 'ctl00_cntPlcHldrContent_txtUsrPwd')
-        submit_button = driver.find_element(By.ID,'ctl00_cntPlcHldrContent_ibSignIn')
-
-        time.sleep(5)
-
-        username_input.send_keys('ITHQOPR')
-        password_input.send_keys('Kibb8888')
-        submit_button.click()
-
-        time.sleep(2)
+        # Perform login
+        username = 'ITHQOPR'
+        password = 'Kibb8888'
+        login(driver, username, password)
         # Click on the image button to navigate to another page
         # The button image name is 'Day End Maintenance'
 
@@ -76,7 +65,6 @@ class Three(tk.Frame):
         # In this page, it should be let user to choose the 'Day End Qnquiry' and 'Process Date'
         third_url = driver.current_url
         print("Third URL:", third_url)
-
 
         time.sleep(3)
         # Selecting the multi-select element by locating its id
