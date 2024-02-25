@@ -11,10 +11,13 @@ class two(tk.Frame):
         navigate_to_initial_url(driver, initial_url)
 
         # Perform login
-        username = 'ITHQOPR'
-        password = 'Kibb8888'
+        # username = 'ITHQOPR'
+        # password = 'Kibb8888'
+        # Get the values of USERNAME and PASSWORD from environment variables
+        username = os.getenv("USERNAME")
+        password = os.getenv("PASSWORD")
         login(driver, username, password)
-        
+
         # Click on the image button to navigate to another page
         # The button image name is 'Day End Maintenance'
         # Define Day EndM XPaths

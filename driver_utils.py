@@ -24,4 +24,4 @@ def login(driver, username, password):
     submit_button.click()
 
     time.sleep(5)
-    # You might want to add some waits here as well
+

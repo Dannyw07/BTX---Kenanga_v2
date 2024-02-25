@@ -23,8 +23,8 @@ import ttkbootstrap as tb
 from tkinter import messagebox
 import datetime
 import subprocess
-# from dotenv import load_dotenv
-# load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 import queue
 from selenium.webdriver.support.ui import Select
 import datetime
