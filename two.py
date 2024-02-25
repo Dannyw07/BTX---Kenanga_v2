@@ -1,16 +1,5 @@
 from libraries import *
 
-# https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
-def resource_path(relative_path):
-    # Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS2
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
 class two(tk.Frame):
 
     driver = webdriver.Chrome()
@@ -305,35 +294,9 @@ class two(tk.Frame):
             last_td_element['style'] += 'background-color: red; color: white;'
 
     html_table = str(soup)
-    # print(html_table)
 
-    # tasks = driver.find_elements(By.XPATH,"//table[@id='gvEodEnqSumm']/tbody/tr/td[1]")
-    # # tasks = driver.find_elements(By.XPATH,"//table[@id='gvEodEnqSumm']/tbody/tr")
+    body = generate_email_body(image1_base64,image2_base64)
 
-    # for task in tasks:
-    #     print(task.text)
-    # Concatenate process date with HTML table
-
-    def get_base64_encoded_image(image_path):
-            with open(image_path, "rb") as img_file:
-                return base64.b64encode(img_file.read()).decode('utf-8')
-
-
-    body = '''
-        <p style="color: #a6a698; font-size:13px; font-family: Arial, sans-serif;">Regards,</p>
-        <br>
-        <p style="color: black; font-size: 14px; font-family: Calibri, sans-serif; font-weight: bold; margin: 0; padding:0;margin-bottom: 3px">IT OPERATIONS</p>
-        <p style="color: #a6a698; font-size:13px; font-family: Arial, sans-serif; margin: 0; padding:0;margin-bottom: 3px">Group Digital, Technology & Transformation</p>
-        <p style="color: #a6a698; font-size: 13px; font-family: Arial, sans-serif; font-weight: bold; margin: 0; padding:0;margin-bottom: 3px">Kenanga Investment Bank Berhad</p>
-        <p style="color: #a6a698; font-size: 12px; font-family: Arial, sans-serif; margin: 0; padding:0;margin-bottom: 3px">Level 6, Kenanga Tower</p>
-        <p style="color: #a6a698; font-size: 12px; font-family: Arial, sans-serif;margin: 0; padding:0;margin-bottom: 4px">237, Jalan Tun Razak, 50400 Kuala Lumpur</p>
-        <p style="color: #4472c4; font-size: 11px; font-family: Arial, sans-serif;margin: 0; padding:0;margin-bottom: 3px">Tel: GL +60 3 21722888 (Ext:8364 / 8365 / 8366 / 8357) </p>
-        <br>
-        <img src="data:image/png;base64, {}" alt="image1"> <!-- Embed image1 -->
-        <br>
-        <img src="data:image/png;base64, {}" alt="image2" > <!-- Embed image2 -->
-        '''.format(get_base64_encoded_image(resource_path('images/image1.png')), get_base64_encoded_image(resource_path('images/image2.png')))
-    
     # html_content = f"<p>Process Date: {process_date_value}</p>\n" + html_table + body
     html_content = f"<p>Process Date: {process_date_value}</p>\n\n{html_table}\n{body}"
     # Set up the email details

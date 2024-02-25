@@ -3,17 +3,6 @@ from libraries import *
 # Define a global queue
 from socket import timeout as SocketTimeoutError
 
-# https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
-def resource_path(relative_path):
-    # Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS2
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
 class one(tk.Frame):
         
         driver = webdriver.Chrome()
@@ -90,15 +79,9 @@ class one(tk.Frame):
         third_url = driver.current_url
         print("Third URL:", third_url)
 
-
         time.sleep(3)
         # Selecting the multi-select element by locating its id
         select = Select(driver.find_element(By.ID,"ctl00_cntPlcHldrContent_selEODEnquiry"))
-
-        # Wait for navigation to complete and the dropdown to be visible
-        # WebDriverWait(driver, 20).until(EC.url_changes(driver.current_url))
-        # select_element = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "ctl00_cntPlcHldrContent_selEODEnquiry")))
-
 
         # Select an option from the dropdown (change index as needed)
         select.select_by_value("1,S")
@@ -139,9 +122,6 @@ class one(tk.Frame):
 
         # Get the HTML content of the fifth URL
         html_content_fifth_url = driver.page_source
-
-        # Print the HTML content of the fifth URL
-        # print("HTML Content of Fifth URL:", html_content_fifth_url)
 
         # Parse the HTML
         soup = BeautifulSoup(html_content_fifth_url, "html.parser")
@@ -305,25 +285,7 @@ class one(tk.Frame):
  
         # Concatenate process date with HTML table
 
-        def get_base64_encoded_image(image_path):
-            with open(image_path, "rb") as img_file:
-                return base64.b64encode(img_file.read()).decode('utf-8')
-
-        body = '''
-            <p style="color: #a6a698; font-size:13px; font-family: Arial, sans-serif;">Regards,</p>
-            <br>
-            <p style="color: black; font-size: 14px; font-family: Calibri, sans-serif; font-weight: bold; margin: 0; padding:0;margin-bottom: 3px">IT OPERATIONS</p>
-            <p style="color: #a6a698; font-size:13px; font-family: Arial, sans-serif; margin: 0; padding:0;margin-bottom: 3px">Group Digital, Technology & Transformation</p>
-            <p style="color: #a6a698; font-size: 13px; font-family: Arial, sans-serif; font-weight: bold; margin: 0; padding:0;margin-bottom: 3px">Kenanga Investment Bank Berhad</p>
-            <p style="color: #a6a698; font-size: 12px; font-family: Arial, sans-serif; margin: 0; padding:0;margin-bottom: 3px">Level 6, Kenanga Tower</p>
-            <p style="color: #a6a698; font-size: 12px; font-family: Arial, sans-serif;margin: 0; padding:0;margin-bottom: 4px">237, Jalan Tun Razak, 50400 Kuala Lumpur</p>
-            <p style="color: #4472c4; font-size: 11px; font-family: Arial, sans-serif;margin: 0; padding:0;margin-bottom: 3px">Tel: GL +60 3 21722888 (Ext:8364 / 8365 / 8366 / 8357) </p>
-            <br>
-            <img src="data:image/png;base64, {}" alt="image1"> <!-- Embed image1 -->
-            <br>
-            <img src="data:image/png;base64, {}" alt="image2" > <!-- Embed image2 -->
-                '''.format(get_base64_encoded_image(resource_path('images/image1.png')), get_base64_encoded_image(resource_path('images/image2.png')))
-
+        body = generate_email_body(image1_base64,image2_base64)
 
         # html_content = f"<p>Process Date: {process_date_value}</p>\n" + html_table + body
         html_content = f"<p>Process Date: {process_date_value}</p>\n\n{html_table}\n{body}"
