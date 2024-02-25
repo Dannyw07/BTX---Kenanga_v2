@@ -30,3 +30,4 @@ from selenium.webdriver.support.ui import Select
 import datetime
 import configparser
 from emailBody import generate_email_body, image1_base64, image2_base64
+from table_extraction import extract_table_data
