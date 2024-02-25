@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-def extract_table_data(table1, table2,data1):
+def extract_table_data(table1, table2):
     # Extract data from the first table
     data1 = []
     for row in table1.find_all("td", id="tdBG"):
