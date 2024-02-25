@@ -136,7 +136,8 @@ class one(tk.Frame):
 
         # Print the extracted date
         print(process_date_label + ":", process_date_value)
-       
+
+        # Extract data from the BTX table
         data1, combined_data = extract_table_data(table1, table2)
 
         # Create a folder named "xlsx_files" if it doesn't exist
@@ -174,8 +175,7 @@ class one(tk.Frame):
 
         body = generate_email_body(image1_base64,image2_base64)
 
-        # html_content = f"<p>Process Date: {process_date_value}</p>\n" + html_table + body
-        html_content = f"<p>Process Date: {process_date_value}</p>\n\n{html_table}\n{body}"
+        html_content = f"<p>Process Date: {process_date_value}</p>\n\n{modified_html_table}\n{body}"
         # Set up the email details
         sender_email = "dannywong@kenanga.com.my"
         receiver_email = ["dannywong@kenanga.com.my"]
