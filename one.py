@@ -10,8 +10,6 @@ class one(tk.Frame):
         initial_url = 'https://btx.kenanga.com.my/btxadmin/default.aspx'
         navigate_to_initial_url(driver, initial_url)
 
-
-
         # Perform login
         username = 'ITHQOPR'
         password = 'Kibb8888'
@@ -79,16 +77,16 @@ class one(tk.Frame):
         # Locate the datepicker input element
         datepicker_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ctl00_cntPlcHldrContent_txtDate")))
         # Get yesterday's date
-        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-        yesterday_str = yesterday.strftime('%d/%m/%Y')  
+        # yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        # yesterday_str = yesterday.strftime('%d/%m/%Y')  
 
         # Get today's date
-        # today = datetime.datetime.now()
-        # today_str = today.strftime('%d/%m/%Y')
+        today = datetime.datetime.now()
+        today_str = today.strftime('%d/%m/%Y')
 
         # Enter yesterday's date into the input field
         datepicker_input.clear()  # Clear any existing value
-        datepicker_input.send_keys(yesterday_str)
+        datepicker_input.send_keys(today_str)
 
         time.sleep(3)
 
@@ -128,8 +126,37 @@ class one(tk.Frame):
         # Print the extracted date
         print(process_date_label + ":", process_date_value)
 
-        # Extract data from the BTX table
-        data1, combined_data = extract_table_data(table1, table2)
+            # Extract data from the first table
+        data1 = []
+        for row in table1.find_all("td", id="tdBG"):
+            row_data = []
+            for cell in row.find_all(["span"]):
+                cell_text = cell.get_text(strip=True)
+                if cell_text:  # Check if cell text is not empty
+                    row_data.append(cell_text)
+            if row_data:  # Only append if row_data is not empty
+                data1.append(row_data)
+
+        # Extract table headers from the second table
+        table2_headers = []
+        for th in table2.find_all("th"):
+            header_text = th.get_text(strip=True)
+            if header_text:  # Check if header text is not empty
+                table2_headers.append(header_text)
+
+        # Extract data from the second table
+        data2 = []
+        for row in table2.find_all("tr"):
+            row_data = []
+            for cell in row.find_all(["td"]):
+                cell_text = cell.get_text(strip=True)
+                if cell_text:  # Check if cell text is not empty
+                    row_data.append(cell_text)
+            if row_data:  # Only append if row_data is not empty
+                data2.append(row_data)
+
+        # Combine data from table1 and table2
+        combined_data = data1 + [table2_headers] + data2
 
         # Create a folder named "xlsx_files" if it doesn't exist
         folder_name = "xlsx_files"
@@ -167,10 +194,10 @@ class one(tk.Frame):
         body = generate_email_body(image1_base64,image2_base64)
 
         html_content = f"<p>Process Date: {process_date_value}</p>\n\n{modified_html_table}\n{body}"
+
         # Set up the email details
         sender_email = "dannywong@kenanga.com.my"
         receiver_email = ["dannywong@kenanga.com.my"]
-
         # cc_emails = ["itklm@kenanga.com.my"]
 
         # Create a multipart message and set headers

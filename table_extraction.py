@@ -32,7 +32,7 @@ def extract_table_data(table1, table2):
 
     # Combine data from table1 and table2
     combined_data = data1 + [table2_headers] + data2
-    return combined_data,data1
+    return combined_data , data1
 
 # Example usage:
 # Assuming you have already parsed the HTML content and obtained table1 and table2
