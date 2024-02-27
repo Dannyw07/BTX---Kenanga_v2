@@ -90,7 +90,7 @@ class BTX:
                         messagebox.showinfo("Processing Ended", f"Processing for {current_time.hour}:{current_time.minute} AM has ended.")
                         email_sent_430am = True
                 else:
-                    # Reset email_sent_545am if the time is not 5:45 AM
+                    # Reset email_sent_430am if the time is not 4:30 AM
                     email_sent_430am = False
 
                 # Check if it's 5:45 AM
