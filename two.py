@@ -161,11 +161,15 @@ class two(tk.Frame):
         data2 = []
         for row in table2.find_all("tr"):
             row_data = []
-            for cell in row.find_all(["td"]):
+            # Flag to check if any non-empty cell is found in the row
+            non_empty_found = False
+            for cell in row.find_all("td"):
                 cell_text = cell.get_text(strip=True)
-                if cell_text:  # Check if cell text is not empty
-                    row_data.append(cell_text)
-            if row_data:  # Only append if row_data is not empty
+                if cell_text: # If cell text is not empty
+                    non_empty_found = True
+                row_data.append(cell_text)
+            # Append the row data only if at least one non-empty cell is found
+            if non_empty_found:
                 data2.append(row_data)
 
         # Combine data from table1 and table2
