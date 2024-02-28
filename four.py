@@ -1,4 +1,5 @@
 from libraries import *
+from selenium.webdriver.support.ui import WebDriverWait
 
 # https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
 def resource_path(relative_path):
@@ -21,12 +22,12 @@ class four(tk.Frame):
         driver.maximize_window()
 
         #Wait for the website to fully load
-        time.sleep(2)
+        wait = WebDriverWait(driver,10)
 
         # Make selenium to automate the login process (username,password,login button)
-        username_input = driver.find_element(By.ID, 'ctl00_cntPlcHldrContent_txtUsrID')
-        password_input = driver.find_element(By.ID, 'ctl00_cntPlcHldrContent_txtUsrPwd')
-        submit_button = driver.find_element(By.ID,'ctl00_cntPlcHldrContent_ibSignIn')
+        username_input = wait.until(EC.visibility_of_element_located((By.ID,'ctl00_cntPlcHldrContent_txtUsrID')))
+        password_input = wait.until (EC.visibility_of_element_located((By.ID,'ctl00_cntPlcHldrContent_txtUsrPwd')))
+        submit_button = wait.until(EC.visibility_of_element_located((By.ID,'ctl00_cntPlcHldrContent_ibSignIn')))
 
         time.sleep(5)
 
