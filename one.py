@@ -213,7 +213,7 @@ class one(tk.Frame):
 
         body = generate_email_body(image1_base64,image2_base64)
 
-        html_content = f"<p>Process Date: {process_date_value}</p>\n\n{modified_html_table}\n{body}"
+        html_content = f"<p><strong>Process Date : </strong>{process_date_value}</p>\n\n{modified_html_table}<p><strong>Logged by : </strong>{username}</p>\n{body}"
 
         # Set up the email details
         sender_email = "dannywong@kenanga.com.my"
