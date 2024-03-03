@@ -1,5 +1,4 @@
 import tkinter as tk
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import WebDriverWait
@@ -25,6 +24,9 @@ from create_excel import generate_excel_file
 from create_html_table import modify_html_table
 from socket import timeout as SocketTimeoutError
 from selenium.webdriver.support import expected_conditions as EC
+# import logging
+# Set up logging configuration
+# logging.basicConfig(filename='one.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class one(tk.Frame):
     
@@ -32,6 +34,7 @@ class one(tk.Frame):
         current_directory = os.path.dirname(os.path.abspath(__file__))
         env_file_path = os.path.join(current_directory,'.env')
         print("Path to .env file", env_file_path)
+        # logging.info("Path to .env file: %s", env_file_path)
 
         # Maximum number of retries
         max_retries = 3
@@ -51,6 +54,8 @@ class one(tk.Frame):
         password = os.getenv('PASSWORD')
         print(f"username: {username}")
         print(f"password: {password}")
+        # logging.info("Username: %s", username)
+        # logging.info("Password: %s", password)
         login(driver, username, password)
 
         # Click on the image button to navigate to another page
@@ -82,6 +87,7 @@ class one(tk.Frame):
         
         second_url = driver.current_url
         print("Second URL:", second_url)
+        # logging.info("Second URL: %s", second_url)
 
         # Define Day End Enquiry XPaths
         day_end_enquiry_xpaths = [
@@ -105,6 +111,7 @@ class one(tk.Frame):
         # In this page, it should be let user to choose the 'Day End Enquiry' and 'Process Date'
         third_url = driver.current_url
         print("Third URL:", third_url)
+        # logging.info("Third URL: %s", third_url)
 
         # Wait for the multi-select element to be present
         select_element = WebDriverWait(driver, 10).until(
@@ -121,33 +128,40 @@ class one(tk.Frame):
             EC.presence_of_element_located((By.ID, "ctl00_cntPlcHldrContent_txtDate"))
         )
 
-        # Get today's date
+        # Get yesterday's date
+        # yesterday = datetime.datetime.now() - datetime.timedelta(days=4)
+        # yesterday_str = yesterday.strftime('%d/%m/%Y')  
+
+        # # Get today's date
         today = datetime.datetime.now()
         today_str = today.strftime('%d/%m/%Y')
 
-        # Enter yesterday's date into the input field
+        # Enter today's date into the input field
         datepicker_input.clear()  # Clear any existing value
         datepicker_input.send_keys(today_str)
 
         while retry_count < max_retries:
             try:
                 # Wait for the search button element to be present
-                searchButton = WebDriverWait(webdriver,10).until(
+                searchButton = WebDriverWait(driver,10).until(
                     EC.presence_of_element_located((By.ID,'ctl00_cntPlcHldrContent_btnTpltUpdate_btnSearch'))
                 )
                 searchButton.click()
                 break # Exit the loop if successfully clicked
             except TimeoutException:
                 print(f"Error: search button not found within 10 seconds (Retry {retry_count + 1}/{max_retries})")
+                # logging.error("Error: Search button not found within 10 seconds (Retry %d/%d): %s", retry_count + 1, max_retries)
                 retry_count += 1
                 # Wait for 2 seconds before retrying again
                 time.sleep(2)
         else:
             print(f"Error: Failed to find search button after {max_retries} retries")
+            # logging.error(f"Error: Failed to find search button after {max_retries} retries")
             # Add additional error handling or raise an exception as needed
 
         forth_url = driver.current_url
         print("Forth URL:", forth_url)
+        # logging.info("Forth URL: %s", forth_url)
 
         # Switch to the new window
         new_window = driver.window_handles[1]
@@ -158,6 +172,7 @@ class one(tk.Frame):
 
         fifth_url = driver.current_url
         print("Fifth URL:", fifth_url)
+        # logging.info("Fifth URL: %s", fifth_url)
 
         driver.get(fifth_url)
 
@@ -178,6 +193,7 @@ class one(tk.Frame):
 
         # Print the extracted date
         print(process_date_label + ":", process_date_value)
+        # logging.info("%s: %s", process_date_label, process_date_value)
 
         # Extract data from the first table
         data1 = []
@@ -262,6 +278,9 @@ class one(tk.Frame):
         print(f'smtp_server_ip: {smtp_server_ip}')
         print(f'smtp_port: {smtp_port}')
         print(f'smtp_username: {smtp_username}')
+        # logging.info("SMTP Server IP: %s", smtp_server_ip)
+        # logging.info("SMTP Port: %s", smtp_port)
+        # logging.info("SMTP Username: %s", smtp_username)
 
         if ',' in recipient_email:
             # Split string into a list of email addresses
@@ -270,6 +289,7 @@ class one(tk.Frame):
             # Treat it as a single email address
             recipient_emails = [recipient_email]
         print(f'recipient_email: {recipient_emails}')
+        # logging.info("Recipient Email: %s", recipient_emails)
 
         if ',' in cc_email:
             # Split string into a list of email addresses
@@ -278,6 +298,7 @@ class one(tk.Frame):
             # Treat it as a single email address
             cc_emails = [cc_email]
         print(f'cc_email: {cc_emails}')
+        # logging.info("CC Email: %s", cc_emails)
 
         # Create a multipart message and set headers
         message = MIMEMultipart()
@@ -297,14 +318,18 @@ class one(tk.Frame):
                 server.connect(smtp_server_ip, smtp_port)
                 server.sendmail(smtp_username, recipient_email, message.as_string())
                 print("Success", f"Email successfully sent using {smtp_server_ip}!")
+                # logging.info("Email successfully sent using %s!", smtp_server_ip)
         except SocketTimeoutError as e:
             print(f"TimeoutError occurred while connecting to SMTP server: {e}")
+            # logging.error("TimeoutError occurred while connecting to SMTP server: %s", e)
             # Additional handling for the timeout error, such as retrying the operation or logging the error.
         except smtplib.SMTPException as e:
             print("Error", f"SMTPException occurred: {e}")
+            # logging.error("SMTPException occurred: %s", e)
             # Additional handling for SMTP exceptions, such as retrying the operation or logging the error.
         except Exception as e:
             print("Error", f"An unexpected error occurred: {e}")
+            # logging.error("An unexpected error occurred: %s", e)
             # Additional handling for any other unexpected exceptions, such as logging the error.
 
         time.sleep(2)
@@ -328,21 +353,25 @@ class one(tk.Frame):
             except TimeoutException:
                 # Handle the case where logout button is not found within 10 seconds
                 print(f'Error: Logout button not found within 10 seconds (Retry {retry_count + 1}/{max_retries})')
+                # logging.error("Logout button not found within 10 seconds (Retry %d/%d)", retry_count + 1, max_retries)
                 retry_count +=1
                 # Wait for 2 seconds before retrying again
                 time.sleep(2)
         else:
             print(f"Error: Failed to find logout button after {max_retries} retries")
+            # logging.error("Failed to find logout button after %d retries", max_retries)
             # Add additional error handling or raise an exception as needed      
 
         # Add a delay to ensure the logout process completes
         time.sleep(5)
         print("Logout successful")
+        # logging.info("Logout successful")
 
         # Close the main window
         driver.close()
     except NoSuchWindowException:
         print("The browser window was unexpectedly closed.")
+        # logging.error("The browser window was unexpectedly closed.")
     # You might want to take appropriate action here, such as reopening the browser.
     finally:
         # Make sure to quit the WebDriver to release resources

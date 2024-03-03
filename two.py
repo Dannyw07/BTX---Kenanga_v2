@@ -1,5 +1,4 @@
 import tkinter as tk
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import WebDriverWait
@@ -29,12 +28,16 @@ from selenium.webdriver.support import expected_conditions as EC
 class two(tk.Frame):
 
     try:
-           # Initialize WebDriver
+        # Initialize WebDriver
         driver = initialize_driver()
 
         # Navigate to initial URL
         initial_url = 'https://btx.kenanga.com.my/btxadmin/default.aspx'
         navigate_to_initial_url(driver, initial_url)
+
+        # Maximum number of retries
+        max_retries = 3
+        retry_count = 0
 
         # Perform login
         # username = 'ITHQOPR'
@@ -111,8 +114,9 @@ class two(tk.Frame):
 
         # Locate the datepicker input element
         datepicker_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ctl00_cntPlcHldrContent_txtDate")))
+
         # Get yesterday's date
-        # yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        # yesterday = datetime.datetime.now() - datetime.timedelta(days=4)
         # yesterday_str = yesterday.strftime('%d/%m/%Y')  
 
         # Get today's date
@@ -123,10 +127,25 @@ class two(tk.Frame):
         datepicker_input.clear()  # Clear any existing value
         datepicker_input.send_keys(today_str)
 
-        time.sleep(3)
+        while retry_count < max_retries:
+            try:
+                # Wait for the search button element to be present
+                searchButton = WebDriverWait(driver,10).until(
+                    EC.presence_of_element_located((By.ID,'ctl00_cntPlcHldrContent_btnTpltUpdate_btnSearch'))
+                )
+                searchButton.click()
+                break # Exit the loop if successfully clicked
+            except TimeoutException:
+                print(f"Error: search button not found within 10 seconds (Retry {retry_count + 1}/{max_retries})")
+                retry_count += 1
+                # Wait for 2 seconds before retrying again
+                time.sleep(2)
+        else:
+            print(f"Error: Failed to find search button after {max_retries} retries")
+            # Add additional error handling or raise an exception as needed
 
-        searchButton = driver.find_element(By.ID, "ctl00_cntPlcHldrContent_btnTpltUpdate_btnSearch")
-        searchButton.click()
+        # searchButton = driver.find_element(By.ID, "ctl00_cntPlcHldrContent_btnTpltUpdate_btnSearch")
+        # searchButton.click()
 
         forth_url = driver.current_url
         print("Forth URL:", forth_url)
@@ -141,13 +160,14 @@ class two(tk.Frame):
         fifth_url = driver.current_url
         print("Fifth URL:", fifth_url)
 
-        process_dates = driver.find_elements(By.XPATH, "//table[@class='clsTable']/tbody/tr[2]/td[@id='tdBG']/span")
+        # process_dates = driver.find_elements(By.XPATH, "//table[@class='clsTable']/tbody/tr[2]/td[@id='tdBG']/span")
 
-        for process in process_dates:
-            print(process.text)
+        # for process in process_dates:
+        #     print(process.text)
 
-        nextButton = driver.find_element(By.ID, "ibNext")
-        nextButton.click()
+        # nextButton = driver.find_element(By.ID, "ibNext")
+        # nextButton.click()
+        driver.get(fifth_url)
 
         # Get the HTML content of the fifth URL
         html_content_fifth_url = driver.page_source
@@ -301,14 +321,30 @@ class two(tk.Frame):
 
         # Switch back to the main window
         driver.switch_to.window(driver.window_handles[0])
-        time.sleep(3)
+        # time.sleep(3)
 
         #Perform Logout Operation
-        logoutButton = driver.find_element(By.ID, "ctl00_lbtnLogout")
-        # logoutButton = driver.find_element(By.XPATH, "//table[@id='tblHeader']/tbody/tr/td/table/tbody/tr/td[8]/a[@id='lbNext']")
-        logoutButton.click()
+        while retry_count < max_retries:
+            try:
+                # Wait for the logout button to be clickable
+                logoutButton = WebDriverWait(driver,10).until(
+                    EC.presence_of_element_located((By.ID,'ctl00_lbtnLogout'))
+                )
+                # Once the button is clickable, click it
+                logoutButton.click()
+                break # Exit the loop if successfully clicked
+            except TimeoutException:
+                # Handle the case where logout button is not found within 10 seconds
+                print(f'Error: Logout button not found within 10 seconds (Retry {retry_count + 1}/{max_retries})')
+                retry_count +=1
+                # Wait for 2 seconds before retrying again
+                time.sleep(2)
+        else:
+            print(f"Error: Failed to find logout button after {max_retries} retries")
+            # Add additional error handling or raise an exception as needed      
+
         # Add a delay to ensure the logout process completes
-        time.sleep(2)
+        time.sleep(5)
         print("Logout successful")
 
         # Close the main window

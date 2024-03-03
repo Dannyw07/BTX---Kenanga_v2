@@ -8,7 +8,9 @@ import datetime
 import subprocess
 from dotenv import load_dotenv
 load_dotenv()
-import datetime
+# import logging
+# logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Set up logging configuration
 # Import the ConfigurationTab class from config.py
 # from config import ConfigurationTab
 
@@ -24,9 +26,11 @@ class BTX:
             response = requests.get("http://www.google.com",timeout=5)
             response.raise_for_status()
             print("Internet connection is available.")
+            # logging.info("Internet connection is available.")
             return True
         except requests.RequestException as e:
-            print("No internet connection. Error:", str(e))
+            print(f"No internet connection. Error:", str(e))
+            # logging.error(f"No internet connection. Error:", str(e))
             return False
 
     def handle_SocketError(self):
@@ -35,6 +39,7 @@ class BTX:
             if not self.is_internet_available():
                 self.button_Disabled()
                 print("No internet connection.")
+                # logging.error("No internet connection.")
                 # Display a dialog box with the message
                 messagebox.showinfo("Network Error Detected", "No internet connection. Please exit the program and configure your network.")
                 
@@ -43,6 +48,7 @@ class BTX:
        except Exception as e:
                 # Log other exceptions, if any
                 print(f"Error in handle_SocketError: {str(e)}")
+                # logging.error(f"Error in handle_SocketError: {str(e)}")
                 return False
 
     def start_program(self):
@@ -63,6 +69,7 @@ class BTX:
         # Set the running flag to False to stop the loop
         self.running = False
         print("The program stopped the checking process")
+        # logging.info("The program stopped the checking process")
         self.update_message("The program stopped the checking process")
         self.outputMsg.after(2000, lambda: self.update_message("Ready"))
         # Additional cleanup tasks if needed
@@ -73,7 +80,7 @@ class BTX:
             # Enable the Stop button
             self.endBtn["state"] = tk.NORMAL
             print("The program started the checking process")
-        
+            # logging.info("The program started the checking process")
             # Check for socket error before proceeding
             if not self.handle_SocketError():
                 self.startBtn["state"] = tk.NORMAL
@@ -93,7 +100,7 @@ class BTX:
                 current_time = datetime.datetime.now().time()
                 
                 # Check if it's 4:30 AM
-                if current_time.hour == 13  and current_time.minute == 00:
+                if current_time.hour == 4  and current_time.minute == 20:
                     # Check if email for 5:45 AM has already been sent
                     if not email_sent_430am:
                         subprocess.run(["python", "one.py"])
@@ -104,7 +111,7 @@ class BTX:
                     email_sent_430am = False
 
                 # Check if it's 5:45 AM
-                if current_time.hour == 13 and current_time.minute == 10:
+                if current_time.hour == 5 and current_time.minute == 35:
                     # Check if email for 5:45 AM has already been sent
                     if not email_sent_545am:
                         subprocess.run(["python", "two.py"])
@@ -115,7 +122,7 @@ class BTX:
                     email_sent_545am = False
 
                 # Check if it's 6:30 AM
-                if current_time.hour == 13 and current_time.minute == 20:
+                if current_time.hour == 6 and current_time.minute == 20:
                     # Check if email for 6:30 AM has already been sent
                     if not email_sent_630am:
                         subprocess.run(["python", "three.py"])
@@ -127,7 +134,7 @@ class BTX:
 
                 # Check if it's 7:00 AM
                 # if current_time.hour == 13 and current_time.minute == 1:
-                if current_time.hour == 13 and current_time.minute == 30:
+                if current_time.hour == 6 and current_time.minute == 50:
                     # Check if email for 7:00 AM has already been sent
                     if not email_sent_700am:
                         subprocess.run(["python", "four.py"])
@@ -138,12 +145,14 @@ class BTX:
                     email_sent_700am = False
 
                 print('waiting...')
+                # logging.info("waiting")
                 self.update_message('Waiting...')
                 # If neither of the conditions are met, wait for 5 seconds
                 time.sleep(5)
         
         except TimeoutError as e:
             print(f"TimeoutError occurred in run_program: {e}")
+            # logging.error(f"TimeoutError occurred in run_program: {e}")
             # Additional handling for the timeout error, such as logging the error or notifying the user.
             # You can also add a messagebox here to inform the user about the timeout error.
             messagebox.showerror("Timeout Error", "A timeout error occurred. Please check your internet connection and try again.")
