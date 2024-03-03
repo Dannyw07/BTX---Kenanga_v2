@@ -19,8 +19,10 @@ class two(tk.Frame):
         env_file_path = os.path.join(current_directory,'.env')
         print("Path to .env file:", env_file_path)
 
-        username = os.getenv("USERNAME")
-        password = os.getenv("PASSWORD")
+        username = os.getenv('USER_NAME')
+        password = os.getenv('PASSWORD')
+        print(f"username: {username}")
+        print(f"password: {password}")
         login(driver, username, password)
 
         # Click on the image button to navigate to another page
@@ -84,16 +86,16 @@ class two(tk.Frame):
         # Locate the datepicker input element
         datepicker_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ctl00_cntPlcHldrContent_txtDate")))
         # Get yesterday's date
-        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-        yesterday_str = yesterday.strftime('%d/%m/%Y')  
+        # yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        # yesterday_str = yesterday.strftime('%d/%m/%Y')  
 
         # Get today's date
-        # today = datetime.datetime.now()
-        # today_str = today.strftime('%d/%m/%Y')
+        today = datetime.datetime.now()
+        today_str = today.strftime('%d/%m/%Y')
 
         # Enter yesterday's date into the input field
         datepicker_input.clear()  # Clear any existing value
-        datepicker_input.send_keys(yesterday_str)
+        datepicker_input.send_keys(today_str)
 
         time.sleep(3)
 
@@ -210,17 +212,40 @@ class two(tk.Frame):
 
         body = generate_email_body(image1_base64,image2_base64)
 
-        html_content = f"<p>Process Date: {process_date_value}</p>\n\n{modified_html_table}\n{body}"
-        # Set up the email details
-        sender_email = "dannywong@kenanga.com.my"
-        receiver_email = ["dannywong@kenanga.com.my"]
-        # cc_emails = ["itklm@kenanga.com.my"]
+        html_content = f"<p><strong>Process Date : </strong>{process_date_value}</p>\n\n{modified_html_table}<p><strong>Logged by : </strong>{username}</p>\n{body}"
+       
+        # Load environment variables from .env file
+        smtp_server_ip = os.getenv('SMTP_SERVER_IP')
+        smtp_port = os.getenv('SMTP_PORT')
+        smtp_username = os.getenv('EMAIL_ADDRESS')
+        recipient_email = os.getenv('RECIPIENT_ADDRESS')
+        cc_email = os.getenv('CC_ADDRESS')
+
+        print(f'smtp_server_ip: {smtp_server_ip}')
+        print(f'smtp_port: {smtp_port}')
+        print(f'smtp_username: {smtp_username}')
+
+        if ',' in recipient_email:
+            # Split string into a list of email addresses
+            recipient_emails = recipient_email.split(',')
+        else:
+            # Treat it as a single email address
+            recipient_emails = [recipient_email]
+        print(f'recipient_email: {recipient_emails}')
+
+        if ',' in cc_email:
+            # Split string into a list of email addresses
+            cc_emails = cc_email.split(',')
+        else:
+            # Treat it as a single email address
+            cc_emails = [cc_email]
+        print(f'cc_email: {cc_emails}')
 
         # Create a multipart message and set headers
         message = MIMEMultipart()
-        message["From"] = sender_email
-        message["To"] =  ','.join(receiver_email)
-        # message['Cc'] = ','.join(cc_emails)
+        message["From"] = smtp_username
+        message["To"] =  ','.join(recipient_emails)
+        message['Cc'] = ','.join(cc_emails)
         message["Subject"] = f"[Testing Email] BTX Start Of Day process monitoring {process_date_value} - checking @ 5.45am "
 
         # Add HTML table to the email body
@@ -231,9 +256,9 @@ class two(tk.Frame):
 
         try:
             with smtplib.SMTP(timeout=timeout) as server:
-                server.connect("172.21.5.60", 25)
-                server.sendmail(sender_email, receiver_email, message.as_string())
-                print("Success", "Email successfully sent!")
+                server.connect(smtp_server_ip, smtp_port)
+                server.sendmail(smtp_username, recipient_email, message.as_string())
+                print("Success", f"Email successfully sent using {smtp_server_ip}!")
         except SocketTimeoutError as e:
             print(f"TimeoutError occurred while connecting to SMTP server: {e}")
             # Additional handling for the timeout error, such as retrying the operation or logging the error.

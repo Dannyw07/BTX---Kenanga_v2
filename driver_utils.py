@@ -1,10 +1,17 @@
 # driver_utils.py
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 import time
 
 def initialize_driver():
-    driver = webdriver.Chrome()
+    # Define Chrome options
+    chrome_options = Options()
+    # Add option to clear cache
+    chrome_options.add_argument("--disable-application-cache")
+    # Create a new instance of Chrome WebDriver with the defined options
+    driver = webdriver.Chrome(options=chrome_options)
+    # driver = webdriver.Chrome()
     driver.maximize_window()
     return driver
 
