@@ -1,4 +1,30 @@
-from libraries import *
+import tkinter as tk
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import pandas as pd
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
+import os
+from socket import timeout as SocketTimeoutError
+import time
+import datetime
+from dotenv import load_dotenv
+load_dotenv()
+from selenium.webdriver.support.ui import Select
+import datetime
+from selenium.common.exceptions import NoSuchWindowException
+from driver_utils import initialize_driver, navigate_to_initial_url, login
+from emailBody import generate_email_body, image1_base64, image2_base64
+from create_excel import generate_excel_file
+from create_html_table import modify_html_table
+from socket import timeout as SocketTimeoutError
+from selenium.webdriver.support import expected_conditions as EC
 
 class Three(tk.Frame):
 
@@ -130,8 +156,41 @@ class Three(tk.Frame):
         # Print the extracted data
         print(process_date_label + ":", process_date_value)
 
-        # # Extract data from the BTX table
-        data1, combined_data = extract_table_data(table1, table2)
+        # Extract data from the first table
+        data1 = []
+        for row in table1.find_all("td", id="tdBG"):
+            row_data = []
+            for cell in row.find_all(["span"]):
+                cell_text = cell.get_text(strip=True)
+                if cell_text:  # Check if cell text is not empty
+                    row_data.append(cell_text)
+            if row_data:  # Only append if row_data is not empty
+                data1.append(row_data)
+
+        # Extract table headers from the second table
+        table2_headers = []
+        for th in table2.find_all("th"):
+            header_text = th.get_text(strip=True)
+            if header_text:  # Check if header text is not empty
+                table2_headers.append(header_text)
+
+        # Extract data from the second table
+        data2 = []
+        for row in table2.find_all("tr"):
+            row_data = []
+            # Flag to check if any non-empty cell is found in the row
+            non_empty_found = False
+            for cell in row.find_all("td"):
+                cell_text = cell.get_text(strip=True)
+                if cell_text: # If cell text is not empty
+                    non_empty_found = True
+                row_data.append(cell_text)
+            # Append the row data only if at least one non-empty cell is found
+            if non_empty_found:
+                data2.append(row_data)
+
+        # Combine data from table1 and table2
+        combined_data = data1 + [table2_headers] + data2
         
         # Create a folder named "xlsx_files" if it doesn't exist
         folder_name = "xlsx_files"

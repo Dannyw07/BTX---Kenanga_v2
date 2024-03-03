@@ -1,4 +1,14 @@
-from libraries import *
+import tkinter as tk
+import time
+import requests
+from threading import Thread
+import ttkbootstrap as tb
+from tkinter import messagebox
+import datetime
+import subprocess
+from dotenv import load_dotenv
+load_dotenv()
+import datetime
 # Import the ConfigurationTab class from config.py
 # from config import ConfigurationTab
 
@@ -83,7 +93,7 @@ class BTX:
                 current_time = datetime.datetime.now().time()
                 
                 # Check if it's 4:30 AM
-                if current_time.hour == 15  and current_time.minute == 26:
+                if current_time.hour == 13  and current_time.minute == 00:
                     # Check if email for 5:45 AM has already been sent
                     if not email_sent_430am:
                         subprocess.run(["python", "one.py"])
@@ -94,7 +104,7 @@ class BTX:
                     email_sent_430am = False
 
                 # Check if it's 5:45 AM
-                if current_time.hour == 13 and current_time.minute == 59:
+                if current_time.hour == 13 and current_time.minute == 10:
                     # Check if email for 5:45 AM has already been sent
                     if not email_sent_545am:
                         subprocess.run(["python", "two.py"])
@@ -105,7 +115,7 @@ class BTX:
                     email_sent_545am = False
 
                 # Check if it's 6:30 AM
-                if current_time.hour == 14 and current_time.minute == 15:
+                if current_time.hour == 13 and current_time.minute == 20:
                     # Check if email for 6:30 AM has already been sent
                     if not email_sent_630am:
                         subprocess.run(["python", "three.py"])
@@ -117,7 +127,7 @@ class BTX:
 
                 # Check if it's 7:00 AM
                 # if current_time.hour == 13 and current_time.minute == 1:
-                if current_time.hour == 15 and current_time.minute == 20:
+                if current_time.hour == 13 and current_time.minute == 30:
                     # Check if email for 7:00 AM has already been sent
                     if not email_sent_700am:
                         subprocess.run(["python", "four.py"])
