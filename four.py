@@ -1,41 +1,27 @@
 from libraries import *
 from selenium.webdriver.support.ui import WebDriverWait
 
-# https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
-def resource_path(relative_path):
-    # Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS2
-    except Exception:
-        base_path = os.path.abspath(".")
 
-    return os.path.join(base_path, relative_path)
 
 class four(tk.Frame):
     try:
-        driver = webdriver.Chrome()
-        #Initial URL
-        driver.get('https://btx.kenanga.com.my/btxadmin/default.aspx')
+        # Get the values of USERNAME and PASSWORD from environment variables
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        env_file_path = os.path.join(current_directory,'.env')
+        # Initialize WebDriver
+        driver = initialize_driver()
 
-        # Maximizing window
-        driver.maximize_window()
+        # Navigate to initial URL
+        initial_url = 'https://btx.kenanga.com.my/btxadmin/default.aspx'
+        navigate_to_initial_url(driver, initial_url)
 
-        #Wait for the website to fully load
-        wait = WebDriverWait(driver,10)
-
-        # Make selenium to automate the login process (username,password,login button)
-        username_input = wait.until(EC.visibility_of_element_located((By.ID,'ctl00_cntPlcHldrContent_txtUsrID')))
-        password_input = wait.until (EC.visibility_of_element_located((By.ID,'ctl00_cntPlcHldrContent_txtUsrPwd')))
-        submit_button = wait.until(EC.visibility_of_element_located((By.ID,'ctl00_cntPlcHldrContent_ibSignIn')))
-
-        time.sleep(5)
-
-        username_input.send_keys('ITHQOPR')
-        password_input.send_keys('Kibb8888')
-        submit_button.click()
-
-        time.sleep(2)
+        # Perform login
+        username = os.getenv('USER_NAME')
+        password = os.getenv('PASSWORD')
+        print(f"username: {username}")
+        print(f"password: {password}")
+        login(driver, username, password)
+        
         # Click on the image button to navigate to another page
         # The button image name is 'Day End Maintenance'
         # Define Day EndM XPaths
@@ -209,71 +195,43 @@ class four(tk.Frame):
         # Convert the DataFrame to an HTML table with no index
         html_table = df.to_html(index=False, header=False)
 
-        # Modify the HTML table to make the header grey
-        soup = BeautifulSoup(html_table, "html.parser")
-        tr_elements = soup.find_all("tr")[1:]  # Select rows starting from the third row
+        modified_html_table = modify_html_table(html_table)
+        body = generate_email_body(image1_base64,image2_base64)
+        html_content = f"<p><strong>Process Date : </strong>{process_date_value}</p>\n\n{modified_html_table}<p><strong>Logged by : </strong>{username}</p>\n{body}"
+       
+        # Load environment variables from .env file
+        smtp_server_ip = os.getenv('SMTP_SERVER_IP')
+        smtp_port = os.getenv('SMTP_PORT')
+        smtp_username = os.getenv('EMAIL_ADDRESS')
+        recipient_email = os.getenv('RECIPIENT_ADDRESS')
+        cc_email = os.getenv('CC_ADDRESS')
 
-        for idx, element in enumerate(soup.find_all(["td"])):
-            if element.name == "td":
-                if element.text.strip() in ["Task ID", "Task Name", "Start Time", "Actual Start Time", "Actual End Time", "Duration", "Next Day", "Status"]:
-                    element['style'] = 'background-color:#d7dae1; color:#0b14fe; font-weight:bold;'
+        print(f'smtp_server_ip: {smtp_server_ip}')
+        print(f'smtp_port: {smtp_port}')
+        print(f'smtp_username: {smtp_username}')
 
-        # Iterate over each table row, starting from the second row
-        for tr_element in tr_elements[0:]:
-            # Find all table cells within the current row
-            td_elements = tr_element.find_all("td")
-            
-            # Iterate over each table cell within the current row
-            for td_element in td_elements:
-                # Add padding to the cell
-                td_element['style'] = 'padding: 5px;'
-            
-            # Get the last table cell in the current row
-            last_td_element = td_elements[-1]
-            
-            # Check if the text content of the last cell contains "Process Succeeded!"
-            if "Process Succeeded!" in last_td_element.text.strip():
-                # If it does, set the background color to green and text color to white
-                last_td_element['style'] += 'background-color: green; color: white;'
-            else:
-                # If not, set the background color to red and text color to white
-                last_td_element['style'] += 'background-color: red; color: white;'
+        if ',' in recipient_email:
+            # Split string into a list of email addresses
+            recipient_emails = recipient_email.split(',')
+        else:
+            # Treat it as a single email address
+            recipient_emails = [recipient_email]
+        print(f'recipient_email: {recipient_emails}')
 
-        html_table = str(soup)
-        # print(html_table)
-        # Close the workbook
+        if ',' in cc_email:
+            # Split string into a list of email addresses
+            cc_emails = cc_email.split(',')
+        else:
+            # Treat it as a single email address
+            cc_emails = [cc_email]
+        print(f'cc_email: {cc_emails}')
 
-        def get_base64_encoded_image(image_path):
-                with open(image_path, "rb") as img_file:
-                    return base64.b64encode(img_file.read()).decode('utf-8')
-
-        body = '''
-            <p style="color: #a6a698; font-size:13px; font-family: Arial, sans-serif;">Regards,</p>
-            <br>
-            <p style="color: black; font-size: 14px; font-family: Calibri, sans-serif; font-weight: bold; margin: 0; padding:0;margin-bottom: 3px">IT OPERATIONS</p>
-            <p style="color: #a6a698; font-size:13px; font-family: Arial, sans-serif; margin: 0; padding:0;margin-bottom: 3px">Group Digital, Technology & Transformation</p>
-            <p style="color: #a6a698; font-size: 13px; font-family: Arial, sans-serif; font-weight: bold; margin: 0; padding:0;margin-bottom: 3px">Kenanga Investment Bank Berhad</p>
-            <p style="color: #a6a698; font-size: 12px; font-family: Arial, sans-serif; margin: 0; padding:0;margin-bottom: 3px">Level 6, Kenanga Tower</p>
-            <p style="color: #a6a698; font-size: 12px; font-family: Arial, sans-serif;margin: 0; padding:0;margin-bottom: 4px">237, Jalan Tun Razak, 50400 Kuala Lumpur</p>
-            <p style="color: #4472c4; font-size: 11px; font-family: Arial, sans-serif;margin: 0; padding:0;margin-bottom: 3px">Tel: GL +60 3 21722888 (Ext:8364 / 8365 / 8366 / 8357) </p>
-            <br>
-            <img src="data:image/png;base64, {}" alt="image1"> <!-- Embed image1 -->
-            <br>
-            <img src="data:image/png;base64, {}" alt="image2" > <!-- Embed image2 -->
-            '''.format(get_base64_encoded_image(resource_path('images/image1.png')), get_base64_encoded_image(resource_path('images/image2.png')))
-        
-        html_content = f"<p>Process Date: {process_date_value}</p>\n\n{html_table}\n{body}"
-        # Set up the email details
-        sender_email = "dannywong@kenanga.com.my"
-        # receiver_email = ["dannywong@kenanga.com.my"]
-        receiver_email = ["dannywong@kenanga.com.my"]
-        # cc_emails = ["itklm@kenanga.com.my"]
 
         # Create a multipart message and set headers
         message = MIMEMultipart()
-        message["From"] = sender_email
-        message["To"] =  ','.join(receiver_email)
-        # message['Cc'] = ','.join(cc_emails)
+        message["From"] = smtp_username
+        message["To"] =  ','.join(recipient_emails)
+        message['Cc'] = ','.join(cc_emails)
         message["Subject"] = f"[Testing Email] BTX Start Of Day process monitoring {process_date_value} - checking @ 7.00am "
 
         # Add HTML table to the email body
@@ -283,9 +241,9 @@ class four(tk.Frame):
 
         try:
             with smtplib.SMTP(timeout=timeout) as server:
-                server.connect("172.21.5.60", 25)
-                server.sendmail(sender_email, receiver_email, message.as_string())
-                print("Success", "Email successfully sent!")
+                server.connect(smtp_server_ip, smtp_port)
+                server.sendmail(smtp_username, recipient_email, message.as_string())
+                print("Success", f"Email successfully sent using {smtp_server_ip}!")
         except SocketTimeoutError as e:
             print(f"TimeoutError occurred while connecting to SMTP server: {e}")
             # Additional handling for the timeout error, such as retrying the operation or logging the error.

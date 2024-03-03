@@ -171,7 +171,7 @@ class Three(tk.Frame):
         
         html_content = f"<p><strong>Process Date : </strong>{process_date_value}</p>\n\n{modified_html_table}<p><strong>Logged by : </strong>{username}</p>\n{body}"
        
-         # Load environment variables from .env file
+        # Load environment variables from .env file
         smtp_server_ip = os.getenv('SMTP_SERVER_IP')
         smtp_port = os.getenv('SMTP_PORT')
         smtp_username = os.getenv('EMAIL_ADDRESS')
