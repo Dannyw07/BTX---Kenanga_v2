@@ -292,7 +292,7 @@ class two(tk.Frame):
         message["From"] = smtp_username
         message["To"] =  ','.join(recipient_emails)
         message['Cc'] = ','.join(cc_emails)
-        message["Subject"] = f"[Testing Email] BTX Start Of Day process monitoring {process_date_value} - checking @ 5.45am "
+        message["Subject"] = f"BTX Start Of Day process monitoring {process_date_value} - checking @ 5.45am "
 
         # Add HTML table to the email body
         message.attach(MIMEText(html_content, "html"))
@@ -303,8 +303,9 @@ class two(tk.Frame):
         try:
             with smtplib.SMTP(timeout=timeout) as server:
                 server.connect(smtp_server_ip, smtp_port)
-                server.sendmail(smtp_username, recipient_email, message.as_string())
-                print("Success", f"Email successfully sent using {smtp_server_ip}!")
+                # Combine both recipient_emails and cc_emails into a single list
+                all_recipients = recipient_emails + cc_emails
+                server.sendmail(smtp_username, all_recipients, message.as_string())
         except SocketTimeoutError as e:
             print(f"TimeoutError occurred while connecting to SMTP server: {e}")
             # Additional handling for the timeout error, such as retrying the operation or logging the error.
