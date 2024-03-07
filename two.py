@@ -258,7 +258,7 @@ class two(tk.Frame):
 
         body = generate_email_body(image1_base64,image2_base64)
 
-        html_content = f"<p><strong>Process Date : </strong>{process_date_value}</p>\n\n{modified_html_table}<p><strong>Logged by : </strong>{username}</p>\n{body}"
+        html_content = f"<p><strong>Process Date : </strong>{process_date_value}</p>\n\n{modified_html_table}<p><strong>BTX web portal login ID used : </strong>{username}</p>\n{body}"
        
         # Load environment variables from .env file
         smtp_server_ip = os.getenv('SMTP_SERVER_IP')
