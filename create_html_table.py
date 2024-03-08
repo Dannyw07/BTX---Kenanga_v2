@@ -32,7 +32,7 @@ def modify_html_table(html_table):
             last_td_element['style'] += 'background-color: green; color: white;'
         elif "Process started" in last_td_element.text.strip():
             # If it contains "Process started", set the background color to yellow and text color to black
-            last_td_element['style'] += 'background-color: yellow; color: white;'
+            last_td_element['style'] += 'background-color:#FFD700; color: black;'
         else:
             # If not, set the background color to red and text color to white
             last_td_element['style'] += 'background-color: red; color: white;'
