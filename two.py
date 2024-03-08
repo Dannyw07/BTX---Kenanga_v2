@@ -306,6 +306,7 @@ class two(tk.Frame):
                 # Combine both recipient_emails and cc_emails into a single list
                 all_recipients = recipient_emails + cc_emails
                 server.sendmail(smtp_username, all_recipients, message.as_string())
+                print("Success", f"Email successfully sent using {smtp_server_ip}!")
         except SocketTimeoutError as e:
             print(f"TimeoutError occurred while connecting to SMTP server: {e}")
             # Additional handling for the timeout error, such as retrying the operation or logging the error.
