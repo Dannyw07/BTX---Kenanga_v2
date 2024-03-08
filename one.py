@@ -48,8 +48,6 @@ class one(tk.Frame):
         navigate_to_initial_url(driver, initial_url)
 
         # Perform login
-        # username = 'ITHQOPR'
-        # password = 'Kibb8888'
         username = os.getenv('USER_NAME')
         password = os.getenv('PASSWORD')
         print(f"username: {username}")

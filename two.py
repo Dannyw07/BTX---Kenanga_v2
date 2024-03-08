@@ -39,15 +39,13 @@ class two(tk.Frame):
         max_retries = 3
         retry_count = 0
 
-        # Perform login
-        # username = 'ITHQOPR'
-        # password = 'Kibb8888'
-        
+
         # Get the values of USERNAME and PASSWORD from environment variables
         current_directory = os.path.dirname(os.path.abspath(__file__))
         env_file_path = os.path.join(current_directory,'.env')
         print("Path to .env file:", env_file_path)
 
+        # Perform login
         username = os.getenv('USER_NAME')
         password = os.getenv('PASSWORD')
         print(f"username: {username}")

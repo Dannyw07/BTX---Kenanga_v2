@@ -48,6 +48,7 @@ class Three(tk.Frame):
         print(f"username: {username}")
         print(f"password: {password}")
         login(driver, username, password)
+        
         # Click on the image button to navigate to another page
         # The button image name is 'Day End Maintenance'
 
