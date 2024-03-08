@@ -104,7 +104,8 @@ class BTX:
                     # Check if email for 5:45 AM has already been sent
                     if not email_sent_430am:
                         subprocess.run(["python", "one.py"])
-                        messagebox.showinfo("Processing Ended", f"Processing for {current_time.hour}:{current_time.minute} AM has ended.")
+                        # messagebox.showinfo("Processing Ended", f"Processing for {current_time.hour}:{current_time.minute} AM has ended.")
+                        print("Processing Done",f"Processing for{current_time.hour}:{current_time.minute} AM has ended.")
                         email_sent_430am = True
                 else:
                     # Reset email_sent_430am if the time is not 4:30 AM
@@ -115,7 +116,8 @@ class BTX:
                     # Check if email for 5:45 AM has already been sent
                     if not email_sent_545am:
                         subprocess.run(["python", "two.py"])
-                        messagebox.showinfo("Processing Ended", f"Processing for {current_time.hour}:{current_time.minute} AM has ended.")
+                        # messagebox.showinfo("Processing Ended", f"Processing for {current_time.hour}:{current_time.minute} AM has ended.")
+                        print("Processing Done",f"Processing for{current_time.hour}:{current_time.minute} AM has ended.")
                         email_sent_545am = True
                 else:
                     # Reset email_sent_545am if the time is not 5:45 AM
@@ -126,7 +128,8 @@ class BTX:
                     # Check if email for 6:30 AM has already been sent
                     if not email_sent_630am:
                         subprocess.run(["python", "three.py"])
-                        messagebox.showinfo("Processing Ended", f"Processing for {current_time.hour}:{current_time.minute} AM has ended.")
+                        # messagebox.showinfo("Processing Ended", f"Processing for {current_time.hour}:{current_time.minute} AM has ended.")
+                        print("Processing Done",f"Processing for{current_time.hour}:{current_time.minute} AM has ended.")
                         email_sent_630am = True
                 else:
                     # Reset email_sent_545am if the time is not 5:45 AM
@@ -138,7 +141,8 @@ class BTX:
                     # Check if email for 7:00 AM has already been sent
                     if not email_sent_700am:
                         subprocess.run(["python", "four.py"])
-                        messagebox.showinfo("Processing Ended", f"Processing for {current_time.hour}:{current_time.minute} AM has ended.")
+                        # messagebox.showinfo("Processing Ended", f"Processing for {current_time.hour}:{current_time.minute} AM has ended.")
+                        print("Processing Done",f"Processing for{current_time.hour}:{current_time.minute} AM has ended.")
                         email_sent_700am = True
                 else:
                     # Reset email_sent_700am if the time is not 7:00 AM
