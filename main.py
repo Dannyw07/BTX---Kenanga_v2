@@ -16,6 +16,13 @@ load_dotenv()
 
 class BTX:
 
+    def button_Disabled(self):
+        self.startBtn["state"] = tk.NORMAL   
+        self.endBtn["state"] = tk.NORMAL
+        # Disable both button
+        self.master.after(2000, lambda: self.startBtn.config(state=tk.DISABLED))
+        self.master.after(2000, lambda: self.endBtn.config(state=tk.DISABLED)) 
+
     def update_message(self, message):
         # Update the message label text
         self.outputMsg.config(text=message)
@@ -42,7 +49,6 @@ class BTX:
                 # logging.error("No internet connection.")
                 # Display a dialog box with the message
                 messagebox.showinfo("Network Error Detected", "No internet connection. Please exit the program and configure your network.")
-                
                 return False
             return True
        except Exception as e:
@@ -136,7 +142,6 @@ class BTX:
                     email_sent_630am = False
 
                 # Check if it's 7:00 AM
-                # if current_time.hour == 13 and current_time.minute == 1:
                 if current_time.hour == 7 and current_time.minute == 5:
                     # Check if email for 7:00 AM has already been sent
                     if not email_sent_700am:
@@ -158,7 +163,6 @@ class BTX:
             print(f"TimeoutError occurred in run_program: {e}")
             # logging.error(f"TimeoutError occurred in run_program: {e}")
             # Additional handling for the timeout error, such as logging the error or notifying the user.
-            # You can also add a messagebox here to inform the user about the timeout error.
             messagebox.showerror("Timeout Error", "A timeout error occurred. Please check your internet connection and try again.")
         
         finally:

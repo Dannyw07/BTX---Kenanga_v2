@@ -24,6 +24,7 @@ from create_excel import generate_excel_file
 from create_html_table import modify_html_table
 from socket import timeout as SocketTimeoutError
 from selenium.webdriver.support import expected_conditions as EC
+from tkinter import messagebox
 
 class two(tk.Frame):
 
@@ -349,9 +350,31 @@ class two(tk.Frame):
 
         # Close the main window
         driver.close()
+
     except NoSuchWindowException:
         print("The browser window was unexpectedly closed.")
-    # You might want to take appropriate action here, such as reopening the browser.
+
+    except Exception as e:
+        #Check if there's an error message displayed on the page
+
+        try:
+            error_message = driver.find_element(By.ID,'ctl00_cntPlcHldrContent_lblErrMsg')
+            if error_message.text.strip() == "Your User ID is currently in use.":
+                print("Error: Your User ID is currently in use. Stopping the program.")
+                messagebox.showerror("Error", "Your User ID is currently in use. Stopping the program.")
+                # Raise the runtime error to halt further execution
+                raise RuntimeError("Your User ID is currently in use")
+            elif error_message.text.strip() == "Invalid ID or Password. Please try again.":
+                print("Error: Invalid ID or Password. Please change the ID or password in the .env file.")
+                # Display a message box
+                messagebox.showerror("Error", "Invalid ID or Password. Please change the ID or password in the .env file.")
+                raise RuntimeError("Invalid ID or Password. Please try again.")
+            else:
+                print("Error:",error_message.text)
+
+        except NoSuchElementException:
+            print("Error: An unexpected error occurred during login:", e)
+
     finally:
         # Make sure to quit the WebDriver to release resources
         driver.quit()
