@@ -49,7 +49,32 @@ class Three(tk.Frame):
         print(f"username: {username}")
         print(f"password: {password}")
         login(driver, username, password)
-        
+
+        # Wait for the logout button to appear in the dashboard that indicates successful login
+        try:
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ctl00_lbtnLogout")))
+            print("Login successful!")
+        except TimeoutException:
+            # Handle the case where the logout button is not found within 10 seconds
+            print("Error: Failed to login or logout button not found within 10 seconds.")
+            # Check for 'Your User ID is currently in use' error message
+            try:
+                error_message = driver.find_element(By.ID, 'ctl00_cntPlcHldrContent_lblErrMsg')
+                if error_message.text.strip() == "Your User ID is currently in use.":
+                    print("Error: Your User ID is currently in use. Stopping the program.")
+                    # Add additional handling for this error, such as stopping the program or raising an exception
+                    raise RuntimeError("Your User ID is currently in use")
+                elif error_message.text.strip() == "Invalid ID or Password. Please try again.":
+                    print("Error: Invalid ID or Password. Please change the ID or password in the .env file.")
+                    raise RuntimeError("Invalid ID or Password. Please try again.")
+                else:
+                    print("Error:", error_message.text)
+            except NoSuchElementException:
+                print("Error: An unexpected error occurred during login.")
+            finally:
+                # Quit the WebDriver to release resources
+                driver.quit()
+
         # Click on the image button to navigate to another page
         # The button image name is 'Day End Maintenance'
 
@@ -359,7 +384,6 @@ class Three(tk.Frame):
                 raise RuntimeError("Your User ID is currently in use")
             elif error_message.text.strip() == "Invalid ID or Password. Please try again.":
                 print("Error: Invalid ID or Password. Please change the ID or password in the .env file.")
-                # Display a message box
                 messagebox.showerror("Error", "Invalid ID or Password. Please change the ID or password in the .env file.")
                 raise RuntimeError("Invalid ID or Password. Please try again.")
             else:
