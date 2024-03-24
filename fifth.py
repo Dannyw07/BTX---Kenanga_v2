@@ -188,8 +188,17 @@ class two(tk.Frame):
         # for process in process_dates:
         #     print(process.text)
 
-        # nextButton = driver.find_element(By.ID, "ibNext")
-        # nextButton.click()
+        # Navigate to page 2
+        nextButton = driver.find_element(By.ID, "ibNext")
+        nextButton.click()
+
+        # Wait for 1 second
+        time.sleep(1)
+
+        # Navigate to page 3
+        nextButton = driver.find_element(By.ID, "ibNext")
+        nextButton.click()
+
         driver.get(fifth_url)
 
         # Get the HTML content of the fifth URL
@@ -260,7 +269,7 @@ class two(tk.Frame):
             os.makedirs(subfolder_name)
 
         # Path to the Excel file inside the subfolder
-        excel_file_path = os.path.join(subfolder_name, "table_0545am.xlsx")
+        excel_file_path = os.path.join(subfolder_name, "table_1030pm.xlsx")
 
         generate_excel_file(excel_file_path, combined_data, data1)
 
@@ -315,7 +324,7 @@ class two(tk.Frame):
         message["From"] = smtp_username
         message["To"] =  ','.join(recipient_emails)
         message['Cc'] = ','.join(cc_emails)
-        message["Subject"] = f"BTX Start Of Day process monitoring {process_date_value} - checking @ 5:45am "
+        message["Subject"] = f"BTX End Of Day process monitoring {process_date_value} - checking @ 10:30pm "
 
         # Add HTML table to the email body
         message.attach(MIMEText(html_content, "html"))

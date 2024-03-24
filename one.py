@@ -269,7 +269,7 @@ class one(tk.Frame):
             os.makedirs(subfolder_name)
 
         # Path to the Excel file inside the subfolder
-        excel_file_path = os.path.join(subfolder_name, "tableOne.xlsx")
+        excel_file_path = os.path.join(subfolder_name, "table_0430am.xlsx")
 
         generate_excel_file(excel_file_path, combined_data, data1)
 
@@ -329,7 +329,7 @@ class one(tk.Frame):
         message["From"] = smtp_username
         message["To"] =  ','.join(recipient_emails)
         message['Cc'] = ','.join(cc_emails)
-        message["Subject"] = f"BTX Start Of Day process monitoring {process_date_value} - checking @ 4.30am "
+        message["Subject"] = f"BTX Start Of Day process monitoring {process_date_value} - checking @ 4:30am "
 
         # Add HTML table to the email body
         message.attach(MIMEText(html_content, "html"))

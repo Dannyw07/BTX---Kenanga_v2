@@ -8,7 +8,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import TimeoutException
 import os
 from socket import timeout as SocketTimeoutError
 import time
@@ -24,18 +23,12 @@ from create_excel import generate_excel_file
 from create_html_table import modify_html_table
 from socket import timeout as SocketTimeoutError
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 from tkinter import messagebox
 
-class two(tk.Frame):
-
+class four(tk.Frame):
     try:
-        # Initialize WebDriver
-        driver = initialize_driver()
-
-        # Navigate to initial URL
-        initial_url = 'https://btx.kenanga.com.my/btxadmin/default.aspx'
-        navigate_to_initial_url(driver, initial_url)
-
         # Maximum number of retries
         max_retries = 3
         retry_count = 0
@@ -43,7 +36,12 @@ class two(tk.Frame):
         # Get the values of USERNAME and PASSWORD from environment variables
         current_directory = os.path.dirname(os.path.abspath(__file__))
         env_file_path = os.path.join(current_directory,'.env')
-        print("Path to .env file:", env_file_path)
+        # Initialize WebDriver
+        driver = initialize_driver()
+
+        # Navigate to initial URL
+        initial_url = 'https://btx.kenanga.com.my/btxadmin/default.aspx'
+        navigate_to_initial_url(driver, initial_url)
 
         # Perform login
         username = os.getenv('USER_NAME')
@@ -77,6 +75,7 @@ class two(tk.Frame):
                 # Quit the WebDriver to release resources
                 driver.quit()
 
+        
         # Click on the image button to navigate to another page
         # The button image name is 'Day End Maintenance'
         # Define Day EndM XPaths
@@ -97,7 +96,6 @@ class two(tk.Frame):
             except NoSuchElementException:
                 # If element is not found, continue to the next XPath
                 continue
-
         # In here, after navigating to the new page, get the new url again
         # In this page, it should be let user to choose the 'Day End Enquiry'
 
@@ -132,23 +130,22 @@ class two(tk.Frame):
         # Selecting the multi-select element by locating its id
         select = Select(driver.find_element(By.ID,"ctl00_cntPlcHldrContent_selEODEnquiry"))
 
-        # Select an option from the dropdown (change index as needed)
         select.select_by_value("1,S")
 
         # Locate the datepicker input element
         datepicker_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ctl00_cntPlcHldrContent_txtDate")))
 
         # Get yesterday's date
-        # yesterday = datetime.datetime.now() - datetime.timedelta(days=4)
-        # yesterday_str = yesterday.strftime('%d/%m/%Y')  
+        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        yesterday_str = yesterday.strftime('%d/%m/%Y')  
 
         # Get today's date
-        today = datetime.datetime.now()
-        today_str = today.strftime('%d/%m/%Y')
+        # today = datetime.datetime.now()
+        # today_str = today.strftime('%d/%m/%Y')
 
         # Enter yesterday's date into the input field
         datepicker_input.clear()  # Clear any existing value
-        datepicker_input.send_keys(today_str)
+        datepicker_input.send_keys(yesterday_str)
 
         while retry_count < max_retries:
             try:
@@ -167,6 +164,7 @@ class two(tk.Frame):
             print(f"Error: Failed to find search button after {max_retries} retries")
             # Add additional error handling or raise an exception as needed
 
+        # time.sleep(3)
         # searchButton = driver.find_element(By.ID, "ctl00_cntPlcHldrContent_btnTpltUpdate_btnSearch")
         # searchButton.click()
 
@@ -183,17 +181,37 @@ class two(tk.Frame):
         fifth_url = driver.current_url
         print("Fifth URL:", fifth_url)
 
-        # process_dates = driver.find_elements(By.XPATH, "//table[@class='clsTable']/tbody/tr[2]/td[@id='tdBG']/span")
+        #Find the input field by its ID, for example
+        input_number_field = driver.find_element(By.ID,"txtSize")
 
-        # for process in process_dates:
-        #     print(process.text)
+        # Clear the existing input value
+        input_number_field.clear()
 
-        # nextButton = driver.find_element(By.ID, "ibNext")
-        # nextButton.click()
-        driver.get(fifth_url)
+        # Type a new number into the input field
+        new_number = "60"  # Change this to the new number you want to input
+        input_number_field.send_keys(new_number)
 
-        # Get the HTML content of the fifth URL
+        # After setting the input value to 60
+        driver.execute_script("document.getElementById('txtSize').setAttribute('value', '60');")
+        # Disable the onkeypress event handler
+        driver.execute_script("document.getElementById('txtSize').removeAttribute('onkeypress');")
+
+        goButton = driver.find_element(By.ID, "ibGoto")
+        goButton.click()
+
+        # Navigate to page 2
+        nextButton = driver.find_element(By.ID, "lbNext")
+        nextButton.click()
+
+        time.sleep(3)
+        sixth_url = driver.current_url
+        print("Sixth URL:", sixth_url)
+
         html_content_fifth_url = driver.page_source
+
+        time.sleep(2)
+        # Print the HTML content of the fifth URL
+        # print("HTML Content of Fifth URL:", html_content_sixth_url)
 
         # Parse the HTML
         soup = BeautifulSoup(html_content_fifth_url, "html.parser")
@@ -260,10 +278,11 @@ class two(tk.Frame):
             os.makedirs(subfolder_name)
 
         # Path to the Excel file inside the subfolder
-        excel_file_path = os.path.join(subfolder_name, "table_0545am.xlsx")
+        excel_file_path = os.path.join(subfolder_name, "table_0100am.xlsx")
 
+        # Create a new workbook and add a worksheet
         generate_excel_file(excel_file_path, combined_data, data1)
-
+        
         # Load the Excel file
         file_path = excel_file_path
         try:
@@ -280,7 +299,7 @@ class two(tk.Frame):
         modified_html_table = modify_html_table(html_table)
 
         body = generate_email_body(image1_base64,image2_base64)
-
+        
         html_content = f"<p><strong>Process Date : </strong>{process_date_value}</p>\n\n{modified_html_table}<p><strong>BTX web portal login ID used : </strong>{username}</p>\n{body}"
        
         # Load environment variables from .env file
@@ -315,12 +334,11 @@ class two(tk.Frame):
         message["From"] = smtp_username
         message["To"] =  ','.join(recipient_emails)
         message['Cc'] = ','.join(cc_emails)
-        message["Subject"] = f"BTX Start Of Day process monitoring {process_date_value} - checking @ 5:45am "
+        message["Subject"] = f"BTX End Of Day process monitoring {process_date_value} - checking @ 01.00am "
 
         # Add HTML table to the email body
         message.attach(MIMEText(html_content, "html"))
 
-        # Set the timeout value in seconds
         timeout = 10  # Adjust this value as needed
 
         try:
@@ -340,14 +358,13 @@ class two(tk.Frame):
             print("Error", f"An unexpected error occurred: {e}")
             # Additional handling for any other unexpected exceptions, such as logging the error.
 
-        time.sleep(2)
         # Close the new window
         driver.close()
 
         # Switch back to the main window
         driver.switch_to.window(driver.window_handles[0])
         # time.sleep(3)
-
+        
         #Perform Logout Operation
         while retry_count < max_retries:
             try:
@@ -366,10 +383,10 @@ class two(tk.Frame):
                 time.sleep(2)
         else:
             print(f"Error: Failed to find logout button after {max_retries} retries")
-            # Add additional error handling or raise an exception as needed      
+            # Add additional error handling or raise an exception as needed   
 
         # Add a delay to ensure the logout process completes
-        time.sleep(5)
+        time.sleep(2)
         print("Logout successful")
 
         # Close the main window
@@ -377,12 +394,29 @@ class two(tk.Frame):
 
     except NoSuchWindowException:
         print("The browser window was unexpectedly closed.")
-
+    
     except Exception as e:
-        print("Error:", e)
+        #Check if there's an error message displayed on the page
+
+        try:
+            error_message = driver.find_element(By.ID,'ctl00_cntPlcHldrContent_lblErrMsg')
+            if error_message.text.strip() == "Your User ID is currently in use.":
+                print("Error: Your User ID is currently in use. Stopping the program.")
+                messagebox.showerror("Error", "Your User ID is currently in use. Stopping the program.")
+                # Raise the runtime error to halt further execution
+                raise RuntimeError("Your User ID is currently in use")
+            elif error_message.text.strip() == "Invalid ID or Password. Please try again.":
+                print("Error: Invalid ID or Password. Please change the ID or password in the .env file.")
+                messagebox.showerror("Error", "Invalid ID or Password. Please change the ID or password in the .env file.")
+                raise RuntimeError("Invalid ID or Password. Please try again.")
+            else:
+                print("Error:",error_message.text)
+
+        except NoSuchElementException:
+            print("Error: An unexpected error occurred during login:", e)
 
     finally:
         # Make sure to quit the WebDriver to release resources
         driver.quit()
 
-
+    

@@ -75,7 +75,6 @@ class four(tk.Frame):
                 # Quit the WebDriver to release resources
                 driver.quit()
 
-        
         # Click on the image button to navigate to another page
         # The button image name is 'Day End Maintenance'
         # Define Day EndM XPaths
@@ -280,7 +279,7 @@ class four(tk.Frame):
             os.makedirs(subfolder_name)
 
         # Path to the Excel file inside the subfolder
-        excel_file_path = os.path.join(subfolder_name, "tableFour.xlsx")
+        excel_file_path = os.path.join(subfolder_name, "table_0700am.xlsx")
 
         # Create a new workbook and add a worksheet
         generate_excel_file(excel_file_path, combined_data, data1)
@@ -398,25 +397,8 @@ class four(tk.Frame):
         print("The browser window was unexpectedly closed.")
     
     except Exception as e:
-        #Check if there's an error message displayed on the page
-
-        try:
-            error_message = driver.find_element(By.ID,'ctl00_cntPlcHldrContent_lblErrMsg')
-            if error_message.text.strip() == "Your User ID is currently in use.":
-                print("Error: Your User ID is currently in use. Stopping the program.")
-                messagebox.showerror("Error", "Your User ID is currently in use. Stopping the program.")
-                # Raise the runtime error to halt further execution
-                raise RuntimeError("Your User ID is currently in use")
-            elif error_message.text.strip() == "Invalid ID or Password. Please try again.":
-                print("Error: Invalid ID or Password. Please change the ID or password in the .env file.")
-                messagebox.showerror("Error", "Invalid ID or Password. Please change the ID or password in the .env file.")
-                raise RuntimeError("Invalid ID or Password. Please try again.")
-            else:
-                print("Error:",error_message.text)
-
-        except NoSuchElementException:
-            print("Error: An unexpected error occurred during login:", e)
-
+        print("Error:", e)
+    
     finally:
         # Make sure to quit the WebDriver to release resources
         driver.quit()
